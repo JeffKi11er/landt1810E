@@ -21,7 +21,8 @@ public class MyButton extends JButton implements MouseListener {
 //    @Override
 //    public void setSize(int width, int height) {
 //        super.setSize(imNormal.getIconWidth(), imNormal.getIconHeight());
-//    }
+
+
 
     @Override
     public void mouseClicked(MouseEvent e) {
