@@ -1,6 +1,7 @@
 package com.t3h.model;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public abstract class Entity {
     public static final int LEFT = 0;
@@ -23,7 +24,9 @@ public abstract class Entity {
         g2d.drawImage(img, x, y, null);
     }
 
-    public void move() {
+    public void move(ArrayList<MapBoom> arr) {
+        int xR = x;
+        int yR = y;
         switch (orient) {
             case LEFT:
                 x -= speed;
@@ -38,5 +41,42 @@ public abstract class Entity {
                 y += speed;
                 break;
         }
+        boolean check = checkMap(arr);
+        if (check == false){
+            x = xR;
+            y = yR;
+        }
+    }
+
+    public boolean checkMap(ArrayList<MapBoom> arr){
+        for (MapBoom map:arr) {
+            if (map.getBit() == 0){
+                continue;
+            }
+            Rectangle rect = getRect().intersection(map.getRect());
+            if (rect.isEmpty() == false){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Rectangle getRect(){
+        if (img == null){
+            return new Rectangle();
+        }
+        Rectangle rect = new Rectangle(x, y,
+                img.getWidth(null),
+                img.getHeight(null));
+        return rect;
+    }
+
+    public boolean checkDie(ArrayList<Boom> arr){
+        for (Boom b: arr) {
+            if (b.checkExplosion(getRect())){
+                return true;
+            }
+        }
+        return false;
     }
 }

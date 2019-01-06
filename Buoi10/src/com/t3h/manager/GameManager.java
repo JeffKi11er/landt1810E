@@ -15,6 +15,7 @@ public class GameManager {
     private MapManager mapManager = new MapManager();
 
     public void initGame() {
+        SoundManager.play("menu.wav");
         mapManager.readMap("mapGame1.txt");
         arrBoom = new ArrayList<>();
         player = new Player(200, 200);
@@ -23,18 +24,21 @@ public class GameManager {
     }
 
     private void initBoss() {
+        if (arrBoss.size() > 2) {
+            return;
+        }
         arrBoss.add(new Boss(100, 100));
-        arrBoss.add(new Boss(200, 400));
-        arrBoss.add(new Boss(500, 200));
+        arrBoss.add(new Boss(40, 510));
+        arrBoss.add(new Boss(450, 300));
     }
 
     public void draw(Graphics2D g2d) {
-        for (MapBoom map: mapManager.getArrMap()) {
+        for (MapBoom map : mapManager.getArrMap()) {
             map.draw(g2d);
         }
         for (int i = arrBoom.size() - 1; i >= 0; i--) {
             boolean check = arrBoom.get(i).draw(g2d);
-            if (check){
+            if (check) {
                 arrBoom.remove(i);
             }
         }
@@ -45,18 +49,28 @@ public class GameManager {
 
     }
 
-    public void movePlayer(int newOrient){
+    public void movePlayer(int newOrient) {
         player.changeOrient(newOrient);
-        player.move();
+        player.move(mapManager.getArrMap());
     }
 
-    public void playerFire(){
+    public void playerFire() {
         player.fire(arrBoom);
     }
 
-    public void AI() {
-        for (int i = 0; i < arrBoss.size(); i++) {
-            arrBoss.get(i).move();
+    public boolean AI() {
+        for (int i = arrBoss.size() - 1; i >= 0; i--) {
+            arrBoss.get(i).move(mapManager.getArrMap());
+            boolean check = arrBoss.get(i).checkDie(arrBoom);
+            if (check) {
+                SoundManager.play("wahoo.wav");
+                arrBoss.remove(i);
+                initBoss();
+            }
         }
+        for (MapBoom map : mapManager.getArrMap()) {
+            map.checkBoom(arrBoom);
+        }
+        return player.checkDie(arrBoom, arrBoss);
     }
 }

@@ -1,6 +1,7 @@
 package com.t3h.gui;
 
 import com.t3h.manager.GameManager;
+import com.t3h.manager.SoundManager;
 import com.t3h.model.Entity;
 
 import javax.swing.*;
@@ -41,7 +42,23 @@ public class BoomPanel extends JPanel implements Runnable, KeyListener {
     @Override
     public void run() {
         while (true) {
-            manager.AI();
+            boolean isDie = manager.AI();
+            if (isDie) {
+                SoundManager.play("luigi_haha.wav");
+                int result = JOptionPane.showConfirmDialog(
+                        null,
+                        "Do you want to replay?",
+                        "Game over",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if (result == JOptionPane.YES_OPTION) {
+                    manager.initGame();
+                    flag = new boolean[256];
+                } else {
+                    System.exit(0);
+                }
+            }
             if (flag[KeyEvent.VK_LEFT]) {
                 manager.movePlayer(Entity.LEFT);
             } else if (flag[KeyEvent.VK_RIGHT]) {
@@ -51,13 +68,13 @@ public class BoomPanel extends JPanel implements Runnable, KeyListener {
             } else if (flag[KeyEvent.VK_DOWN]) {
                 manager.movePlayer(Entity.DOWN);
             }
-            if (flag[KeyEvent.VK_SPACE]){
+            if (flag[KeyEvent.VK_SPACE]) {
                 manager.playerFire();
             }
             // cập nhập lại giao diện
             repaint();
             try {
-                Thread.sleep(10);
+                Thread.sleep(7);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

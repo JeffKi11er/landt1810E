@@ -1,5 +1,7 @@
 package com.t3h.model;
 
+import com.t3h.manager.SoundManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -69,7 +71,7 @@ public class Player extends Entity{
     }
 
     @Override
-    public void move() {
+    public void move(ArrayList<MapBoom> arr) {
         count++;
         if (count >= 5){
             index++;
@@ -78,7 +80,7 @@ public class Player extends Entity{
             }
             count = 0;
         }
-        super.move();
+        super.move(arr);
     }
 
     public void fire(ArrayList<Boom> arr){
@@ -91,5 +93,25 @@ public class Player extends Entity{
         int yB = y + images[orient][index].getHeight(null)/2;
         Boom b = new Boom(xB, yB);
         arr.add(b);
+        SoundManager.play("explosion.wav");
+    }
+
+    @Override
+    public Rectangle getRect() {
+        int w = images[orient][index].getWidth(null);
+        int h = images[orient][index].getHeight(null);
+        Rectangle rect = new Rectangle(x + 10, y + 30, w - 20, h - 45);
+        return rect;
+    }
+
+    public boolean checkDie(ArrayList<Boom> arrBoom,
+                            ArrayList<Boss> arrBoss){
+        for (Boss b: arrBoss) {
+            Rectangle rect = getRect().intersection(b.getRect());
+            if (rect.isEmpty() == false){
+                return true;
+            }
+        }
+        return super.checkDie(arrBoom);
     }
 }

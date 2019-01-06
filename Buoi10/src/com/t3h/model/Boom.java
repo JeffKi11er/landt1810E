@@ -1,5 +1,7 @@
 package com.t3h.model;
 
+import com.t3h.manager.SoundManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -26,6 +28,9 @@ public class Boom {
         if (time < 0) {
             return true;
         }
+        if (time == 80){
+            SoundManager.play("bigexplode.wav");
+        }
         if (time < 20) {
             index = 4;
         } else if (time < 40) {
@@ -37,9 +42,24 @@ public class Boom {
         } else {
             index = 0;
         }
-        int xD = x - images[index].getWidth(null)/2;
-        int yD = y - images[index].getHeight(null)/2;
+        int xD = x - images[index].getWidth(null) / 2;
+        int yD = y - images[index].getHeight(null) / 2;
         g2d.drawImage(images[index], xD, yD, null);
         return false;
     }
+
+    public boolean checkExplosion(Rectangle rect) {
+        if (index != 3){
+            return false;
+        }
+        int w = images[index].getWidth(null);
+        int h = images[index].getHeight(null);
+        int xD = x - w / 2;
+        int yD = y - h / 2;
+        Rectangle rW = new Rectangle(x - 1, yD, 2, h);
+        Rectangle rH = new Rectangle(xD, y - 1, w, 2);
+        return (rect.intersection(rW).isEmpty() == false)
+                || (rect.intersection(rH).isEmpty() == false);
+    }
+
 }

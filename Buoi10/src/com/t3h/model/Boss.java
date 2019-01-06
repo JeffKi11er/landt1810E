@@ -2,6 +2,7 @@ package com.t3h.model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Boss extends Entity{
@@ -29,9 +30,9 @@ public class Boss extends Entity{
     }
 
     @Override
-    public void move() {
+    public void move(ArrayList<MapBoom> arr) {
         generateOrient();
-        super.move();
+        super.move(arr);
     }
 
     private void generateOrient(){
