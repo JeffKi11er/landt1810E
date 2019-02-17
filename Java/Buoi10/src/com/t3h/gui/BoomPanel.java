@@ -8,8 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class BoomPanel extends JPanel implements Runnable, KeyListener {
+public class BoomPanel extends JPanel implements Runnable, KeyListener, MouseMotionListener {
     private GameManager manager = new GameManager();
     private boolean[] flag = new boolean[256];
 
@@ -94,5 +96,15 @@ public class BoomPanel extends JPanel implements Runnable, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         flag[e.getKeyCode()] = false;
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
     }
 }
