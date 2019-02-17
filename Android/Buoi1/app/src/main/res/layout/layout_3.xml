@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="xin chuc mung 0123456789 den dia chi https://www.google.com/"
+        android:autoLink="all"
+        android:textColor="#ff0509"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        android:shadowColor="#000"
+        android:shadowRadius="3"
+        android:shadowDx="3"
+        android:shadowDy="3"/>
+
+    <EditText
+        android:hint="Input your name"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:drawableLeft="@android:drawable/ic_delete"
+        android:lines="1"
+        android:drawablePadding="10dp"/>
+
+    <Button
+        android:text="Click me!"
+        android:background="#2e2ef2"
+        android:textColor="#fff"
+        android:textAllCaps="false"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
