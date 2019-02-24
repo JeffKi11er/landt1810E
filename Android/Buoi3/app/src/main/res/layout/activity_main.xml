@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.t3h.buoi3.views.ClockView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:size="20sp"
+        app:color="#00e6ff"/>
+    <com.t3h.buoi3.views.ButtonOpacity
+        android:text="Click me!"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:colorDown="#0D47A1"
+        app:colorMove="#0277BD"
+        app:colorUp="#00838F"
+        />
+</LinearLayout>
