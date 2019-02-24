@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:src="@android:drawable/ic_delete"
+                    android:scaleType="center"
+                    android:layout_width="1000dp"
+                    android:layout_height="300dp" />
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:max="100"
+                    android:progress="50"
+                    android:secondaryProgress="70"
+                    android:indeterminate="true"
+                    android:layout_height="wrap_content" />
+                <SeekBar
+                    android:layout_marginTop="20dp"
+                    android:max="100"
+                    android:progress="30"
+                    android:thumb="@null"
+                    android:secondaryProgress="50"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Switch
+                    android:id="@+id/sw_scale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>
