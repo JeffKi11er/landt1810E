@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ユニット4</string>
+    <string name="title_login">ログイン</string>
+    <string name="hint_username">ユーザー名</string>
+    <string name="hint_password">パスワード</string>
+    <string name="btn_ok">同意する</string>
+    <string name="title_register">登録</string>
+    <string name="data_empty">ユーザー名またはパスワードが空です</string>
+    <string name="register_cancelled">登録をキャンセルしました</string>
+</resources>
