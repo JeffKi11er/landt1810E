@@ -1,0 +1,46 @@
+package com.phongbm.buoi9;
+
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import com.phongbm.buoi9.fragment.BaseFragment;
+import com.phongbm.buoi9.fragment.EditStudentFragment;
+import com.phongbm.buoi9.fragment.StudentListFragment;
+
+public class MainActivity extends AppCompatActivity {
+    private StudentListFragment fmStudent = new StudentListFragment();
+    private EditStudentFragment fmEditStudent = new EditStudentFragment();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initFragment();
+        showFragment(fmStudent);
+    }
+
+    private void initFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.panel, fmEditStudent);
+        transaction.add(R.id.panel, fmStudent);
+        transaction.commitAllowingStateLoss();
+    }
+
+    public void showFragment(BaseFragment fm){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.hide(fmStudent);
+        transaction.hide(fmEditStudent);
+        transaction.show(fm);
+        transaction.commitAllowingStateLoss();
+    }
+
+    public StudentListFragment getFmStudent() {
+        return fmStudent;
+    }
+
+    public EditStudentFragment getFmEditStudent() {
+        return fmEditStudent;
+    }
+}
