@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="listener"
+            type="com.phongbm.buoi14.ServiceConnectionListener"/>
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context=".MainActivity">
+
+        <Button
+            android:text="Bind"
+            android:onClick="@{(v) -> listener.onBindClicked()}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="UnBind"
+            android:layout_width="match_parent"
+            android:onClick="@{(v) -> listener.onUnBindClicked()}"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="Start New"
+            android:layout_width="match_parent"
+            android:onClick="@{(v) -> listener.onStartNewAct()}"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</layout>
