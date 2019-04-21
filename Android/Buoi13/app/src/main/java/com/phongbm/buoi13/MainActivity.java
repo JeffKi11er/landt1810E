@@ -14,7 +14,7 @@ import com.phongbm.buoi13.model.Song;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SongAdapter.ItemClickListener {
 
     private final String[] PERMISSION_LIST = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Song> arrSong;
     private ActivityMainBinding binding;
     private SongAdapter adapter;
+    private MediaManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 R.layout.activity_main);
 
         adapter = new SongAdapter(this);
+        adapter.setListener(this);
         binding.lvSong.setAdapter(adapter);
 
         if (checkPermission()){
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         systemData = new SystemData(this);
         arrSong = systemData.getData();
         adapter.setData(arrSong);
+
+        manager = new MediaManager(arrSong, this);
     }
 
     private boolean checkPermission() {
@@ -67,5 +71,10 @@ public class MainActivity extends AppCompatActivity {
         }else{
             finish();
         }
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        manager.create(position);
     }
 }

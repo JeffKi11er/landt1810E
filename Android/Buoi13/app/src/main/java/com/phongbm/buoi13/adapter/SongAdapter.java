@@ -17,6 +17,7 @@ import java.util.Date;
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private ArrayList<Song> data;
     private LayoutInflater inflater;
+    private ItemClickListener listener;
 
     public SongAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -27,6 +28,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void setListener(ItemClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -35,8 +40,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         viewHolder.bindData(data.get(i));
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null){
+                    listener.onItemClicked(i);
+                }
+            }
+        });
     }
 
     @Override
@@ -71,4 +84,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         }
 
     }
+
+    public interface ItemClickListener{
+        void onItemClicked(int position);
+    }
 }
+
