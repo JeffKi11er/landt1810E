@@ -1,6 +1,10 @@
 package com.phongbm.musicplayer.acitivities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -29,8 +33,37 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
     private ArtistFragment fmArtist = new ArtistFragment();
     private PagerAdapter adapter;
 
+    private final String[] PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+    private boolean checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String p : PERMISSIONS) {
+                if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(PERMISSIONS, 0);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (checkPermission()){
+            initAct();
+        }else{
+            finish();
+        }
+    }
+
     @Override
     protected void initAct() {
+        if (checkPermission() == false){
+            return;
+        }
         setSupportActionBar(binding.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.toolbar,

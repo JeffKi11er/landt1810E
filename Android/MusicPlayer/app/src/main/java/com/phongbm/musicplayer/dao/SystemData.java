@@ -4,10 +4,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.util.Log;
 
+import com.phongbm.musicplayer.model.Album;
 import com.phongbm.musicplayer.model.FieldInfo;
 import com.phongbm.musicplayer.model.MP3Media;
-import com.phongbm.musicplayer.model.Song;
+import com.phongbm.musicplayer.model.Music;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,15 +19,32 @@ public class SystemData {
 
     public SystemData(Context context) {
         resolver = context.getContentResolver();
+//        read(resolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null,null));
     }
 
-    public ArrayList<Song> getSongs(){
-        Cursor cursor = resolver.query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, null, null, null, null);
-        ArrayList<Song> arr = getData(cursor, Song.class);
+    private void read(Cursor cursor) {
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                Log.e(cursor.getColumnName(i), cursor.getString(i) + " ");
+            }
+            Log.e("=========", "=================");
+            cursor.moveToNext();
+        }
+    }
+
+    public ArrayList<Music> getSongs() {
+        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        ArrayList<Music> arr = getData(cursor, Music.class);
         return arr;
     }
 
-    private  <T extends MP3Media> ArrayList<T> getData(Cursor cursor, Class<T> clz) {
+    public ArrayList<Album> getAlbums() {
+        Cursor cursor = resolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, null);
+        return getData(cursor, Album.class);
+    }
+
+    private <T extends MP3Media> ArrayList<T> getData(Cursor cursor, Class<T> clz) {
         ArrayList<T> arr = new ArrayList<>();
         try {
             cursor.moveToFirst();
@@ -60,23 +79,23 @@ public class SystemData {
         // lấy ra kiểu dữ liệu của thuộc tính
         String typeName = f.getType().getSimpleName();
 
-        if (typeName.equalsIgnoreCase("int")){
+        if (typeName.equalsIgnoreCase("int")) {
             f.setInt(t, Integer.parseInt(value));
             return;
         }
-        if (typeName.equalsIgnoreCase("long")){
+        if (typeName.equalsIgnoreCase("long")) {
             f.setLong(t, Long.parseLong(value));
             return;
         }
-        if (typeName.equalsIgnoreCase("float")){
+        if (typeName.equalsIgnoreCase("float")) {
             f.setFloat(t, Float.parseFloat(value));
             return;
         }
-        if (typeName.equalsIgnoreCase("double")){
+        if (typeName.equalsIgnoreCase("double")) {
             f.setDouble(t, Double.parseDouble(value));
             return;
         }
-        if (typeName.equalsIgnoreCase("boolean")){
+        if (typeName.equalsIgnoreCase("boolean")) {
             f.setBoolean(t, Boolean.parseBoolean(value));
             return;
         }

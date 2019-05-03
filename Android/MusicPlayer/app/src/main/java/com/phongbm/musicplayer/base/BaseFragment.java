@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.phongbm.musicplayer.dao.SystemData;
+
 public abstract class BaseFragment<BD extends ViewDataBinding>
         extends Fragment {
     protected BD binding;
+    protected SystemData systemData;
 
     @Nullable
     @Override
@@ -21,6 +24,12 @@ public abstract class BaseFragment<BD extends ViewDataBinding>
         binding = DataBindingUtil.inflate(inflater, getLayoutId()
                 , container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        systemData = new SystemData(getContext());
     }
 
     protected abstract int getLayoutId();

@@ -2,7 +2,7 @@ package com.phongbm.musicplayer.model;
 
 import android.provider.MediaStore;
 
-public class Song extends MP3Media {
+public class Music extends MP3Media {
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.TITLE)
     private String title;
     @FieldInfo(fieldName = MediaStore.Audio.AudioColumns.DATA)
