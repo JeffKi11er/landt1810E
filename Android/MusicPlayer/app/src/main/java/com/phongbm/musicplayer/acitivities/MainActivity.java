@@ -1,9 +1,13 @@
 package com.phongbm.musicplayer.acitivities;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.phongbm.musicplayer.App;
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.adapter.PagerAdapter;
 import com.phongbm.musicplayer.base.BaseActivity;
@@ -24,6 +29,7 @@ import com.phongbm.musicplayer.databinding.ActivityMainBinding;
 import com.phongbm.musicplayer.fragments.AlbumFragment;
 import com.phongbm.musicplayer.fragments.ArtistFragment;
 import com.phongbm.musicplayer.fragments.MusicFragment;
+import com.phongbm.musicplayer.service.MP3Service;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding>
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +38,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
     private AlbumFragment fmAlbum = new AlbumFragment();
     private ArtistFragment fmArtist = new ArtistFragment();
     private PagerAdapter adapter;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MP3Service.MP3Binder binder = (MP3Service.MP3Binder) service;
+            App app = (App) getApplicationContext();
+            app.setService(binder.getService());
+            binding.playView.registerState();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -52,18 +73,22 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (checkPermission()){
+        if (checkPermission()) {
             initAct();
-        }else{
+        } else {
             finish();
         }
     }
 
     @Override
     protected void initAct() {
-        if (checkPermission() == false){
+        if (checkPermission() == false) {
             return;
         }
+
+        Intent intent = new Intent(this, MP3Service.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+
         setSupportActionBar(binding.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.toolbar,
@@ -111,5 +136,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
     }
 }

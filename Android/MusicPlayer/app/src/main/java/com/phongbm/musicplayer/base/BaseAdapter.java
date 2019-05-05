@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.phongbm.musicplayer.BR;
@@ -22,6 +21,7 @@ public class BaseAdapter<T extends MP3Media>
     int resId;
     private LayoutInflater inflater;
     private ArrayList<T> data;
+    private ListItemListener listener;
 
     public BaseAdapter(Context context, @LayoutRes int resId) {
         this.resId = resId;
@@ -31,6 +31,14 @@ public class BaseAdapter<T extends MP3Media>
     public void setData(ArrayList<T> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public ArrayList<T> getData() {
+        return data;
+    }
+
+    public void setListener(ListItemListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +58,7 @@ public class BaseAdapter<T extends MP3Media>
     public void onBindViewHolder(@NonNull BaseAdapter.ViewHolder viewHolder, int i) {
         T t = data.get(i);
         viewHolder.binding.setVariable(BR.item, t);
+        viewHolder.binding.setVariable(BR.listener, listener);
         viewHolder.binding.executePendingBindings();
     }
 
@@ -61,5 +70,9 @@ public class BaseAdapter<T extends MP3Media>
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+
+    public interface ListItemListener {
     }
 }

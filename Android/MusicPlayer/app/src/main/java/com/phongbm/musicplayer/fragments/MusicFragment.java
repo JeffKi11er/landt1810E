@@ -9,7 +9,9 @@ import com.phongbm.musicplayer.base.BaseFragment;
 import com.phongbm.musicplayer.databinding.FragmentMusicBinding;
 import com.phongbm.musicplayer.model.Music;
 
-public class MusicFragment extends BaseFragment<FragmentMusicBinding> {
+public class MusicFragment extends BaseFragment<FragmentMusicBinding>
+        implements MediaListener<Music> {
+
     private BaseAdapter<Music> adapter;
 
     @Override
@@ -23,10 +25,18 @@ public class MusicFragment extends BaseFragment<FragmentMusicBinding> {
         adapter = new BaseAdapter<>(getContext(), R.layout.item_music);
         binding.lvSong.setAdapter(adapter);
         adapter.setData(systemData.getSongs());
+        adapter.setListener(this);
     }
 
     @Override
     public int getTitle() {
         return R.string.music;
+    }
+
+    @Override
+    public void onItemMediaClick(Music music) {
+        app.getService().setArrMusic(adapter.getData());
+        int index = adapter.getData().indexOf(music);
+        app.getService().create(index);
     }
 }

@@ -39,6 +39,16 @@ public class SystemData {
         return arr;
     }
 
+    public ArrayList<Music> getSongsByArtist(int id) {
+        String selection = MediaStore.Audio.AudioColumns.ARTIST_ID + "=?";
+        String[] selectionAgr = new String[]{
+                String.valueOf(id)
+        };
+        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, selection, selectionAgr, null);
+        ArrayList<Music> arr = getData(cursor, Music.class);
+        return arr;
+    }
+
     public ArrayList<Album> getAlbums() {
         Cursor cursor = resolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, null);
         return getData(cursor, Album.class);

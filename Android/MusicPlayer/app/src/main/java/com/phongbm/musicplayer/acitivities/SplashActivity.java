@@ -19,7 +19,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
                 startActivity(intent);
                 finish();
             }
-        }, 3000);
+        }, 1000);
     }
 
     @Override

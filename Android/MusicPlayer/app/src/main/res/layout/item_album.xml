@@ -6,11 +6,16 @@
         <variable
             name="item"
             type="com.phongbm.musicplayer.model.Album" />
+
+        <variable
+            name="listener"
+            type="com.phongbm.musicplayer.fragments.MediaListener" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{(v) -> listener.onItemMediaClick(item)}"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
@@ -26,8 +31,8 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:scaleType="centerCrop"
                     android:background="@color/colorPrimaryDark"
+                    android:scaleType="centerCrop"
                     app:thumb="@{item.image}" />
 
                 <TextView
@@ -41,8 +46,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{item.artist}"
                     android:gravity="center"
+                    android:text="@{item.artist}"
                     android:textColor="@color/colorPrimaryDark" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
