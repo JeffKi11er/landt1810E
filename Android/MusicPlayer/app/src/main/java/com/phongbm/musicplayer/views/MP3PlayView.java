@@ -2,17 +2,21 @@ package com.phongbm.musicplayer.views;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.phongbm.musicplayer.App;
 import com.phongbm.musicplayer.acitivities.MainActivity;
+import com.phongbm.musicplayer.acitivities.PlayActivity;
 import com.phongbm.musicplayer.databinding.UiPlayViewBinding;
+import com.phongbm.musicplayer.service.MP3Service;
 
-public class MP3PlayView extends FrameLayout {
+public class MP3PlayView extends FrameLayout implements MP3PlayViewListener, View.OnClickListener {
 
     private UiPlayViewBinding binding;
     private App app;
@@ -42,6 +46,9 @@ public class MP3PlayView extends FrameLayout {
         addView(binding.getRoot());
         app = (App) getContext().getApplicationContext();
         setVisibility(GONE);
+
+        binding.setListener(this);
+        setOnClickListener(this);
     }
 
     public void registerState(){
@@ -70,5 +77,30 @@ public class MP3PlayView extends FrameLayout {
                 binding.setIsPlaying(aBoolean);
             }
         });
+    }
+
+    @Override
+    public void next() {
+        app.getService().change(MP3Service.NEXT);
+    }
+
+    @Override
+    public void prev() {
+        app.getService().change(MP3Service.PREV);
+    }
+
+    @Override
+    public void play() {
+        if (app.getService().getIsPlaying().getValue() == true){
+            app.getService().pause();
+        }else{
+            app.getService().start();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getContext(), PlayActivity.class);
+        getContext().startActivity(intent);
     }
 }

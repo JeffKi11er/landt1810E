@@ -13,13 +13,15 @@ import android.os.IBinder;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.model.Music;
 
 import java.util.ArrayList;
 
-public class MP3Service extends Service implements MediaPlayer.OnCompletionListener {
+public class MP3Service extends Service implements MediaPlayer.OnCompletionListener, Runnable {
+    private Thread t;
 
     private ArrayList<Music> arrMusic;
     private MediaPlayer player;
@@ -28,12 +30,14 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
     private MutableLiveData<Boolean> isPlaying = new MutableLiveData<>();
     private MutableLiveData<String> name = new MutableLiveData<>();
     private MutableLiveData<Boolean> isLife = new MutableLiveData<>();
-
+    private MutableLiveData<Music> music = new MutableLiveData<>();
+    private MutableLiveData<Integer> current = new MutableLiveData<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        pushNotification();
+        t = new Thread(this);
+        t.start();
     }
 
     @Nullable
@@ -57,13 +61,18 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
             manager.createNotificationChannel(channel);
         }
 
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.ui_notification);
+        remoteViews.setTextViewText(R.id.tv_name, arrMusic.get(currentIndex).getTitle());
+        if (player.isPlaying()){
+            remoteViews.setImageViewResource(R.id.im_play, R.drawable.ic_pause);
+        }else{
+            remoteViews.setImageViewResource(R.id.im_play, R.drawable.ic_play);
+        }
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, CHANNEL_ID);
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setTicker("Push notification");
-        builder.setContentTitle("Keep service running");
-        builder.setContentText("Using foreground service");
+        builder.setCustomBigContentView(remoteViews);
         startForeground(1213232, builder.build());
     }
 
@@ -80,12 +89,13 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         }
         Uri uri = Uri.parse(arrMusic.get(index).getData());
         player = MediaPlayer.create(this, uri);
-        start();
         player.setOnCompletionListener(this);
         currentIndex = index;
 
         name.postValue(arrMusic.get(index).getTitle());
         isLife.postValue(true);
+        music.postValue(arrMusic.get(index));
+        start();
     }
 
     public void release() {
@@ -99,6 +109,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if (player != null) {
             player.start();
             isPlaying.postValue(true);
+            pushNotification();
         }
     }
 
@@ -106,6 +117,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         if (player != null) {
             player.pause();
             isPlaying.postValue(false);
+            pushNotification();
         }
     }
 
@@ -133,6 +145,19 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
             return player.getCurrentPosition();
         }
         return 0;
+    }
+
+
+    @Override
+    public void run() {
+        while (true){
+            current.postValue(getPosition());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static final int NEXT = 1;
@@ -179,5 +204,17 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     public MutableLiveData<Boolean> getIsLife() {
         return isLife;
+    }
+
+    public MutableLiveData<Music> getMusic() {
+        return music;
+    }
+
+    public ArrayList<Music> getArrMusic() {
+        return arrMusic;
+    }
+
+    public MutableLiveData<Integer> getCurrent() {
+        return current;
     }
 }
