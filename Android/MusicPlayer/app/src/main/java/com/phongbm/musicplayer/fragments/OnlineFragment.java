@@ -2,6 +2,7 @@ package com.phongbm.musicplayer.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.api.ApiBuilder;
@@ -48,7 +49,7 @@ public class OnlineFragment extends BaseFragment<FragmentOnlineBinding> implemen
 
     @Override
     public void onFailure(Call<MusicResponse> call, Throwable t) {
-
+        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

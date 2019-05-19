@@ -15,7 +15,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
             @Override
             public void run() {
                 Intent intent = new Intent(SplashActivity.this,
-                        MainActivity.class);
+                        LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

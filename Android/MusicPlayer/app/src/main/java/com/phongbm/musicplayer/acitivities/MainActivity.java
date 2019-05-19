@@ -102,9 +102,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
 
         binding.navView.setNavigationItemSelectedListener(this);
 
-        adapter = new PagerAdapter(this,
-                getSupportFragmentManager(),
-                fmMusic, fmAlbum, fmArtist, fmOnline);
+        App app = (App) getApplicationContext();
+        if (app.getUser() == null){
+            adapter = new PagerAdapter(this,
+                    getSupportFragmentManager(),
+                    fmMusic, fmAlbum, fmArtist);
+        }else{
+            adapter = new PagerAdapter(this,
+                    getSupportFragmentManager(),
+                    fmMusic, fmAlbum, fmArtist, fmOnline);
+        }
         binding.pager.setAdapter(adapter);
         binding.tabLayout.setupWithViewPager(binding.pager);
     }

@@ -11,4 +11,9 @@
     <string name="album">Album</string>
     <string name="music_player">Music\nPlayer</string>
     <string name="online">Online</string>
+    <string name="login">Login</string>
+    <string name="user_name">User name</string>
+    <string name="password">Password</string>
+    <string name="input_invalid">Input invalid</string>
+    <string name="loading">Loading...</string>
 </resources>
