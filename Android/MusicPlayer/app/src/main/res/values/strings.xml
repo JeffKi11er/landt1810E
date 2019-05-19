@@ -10,4 +10,5 @@
     <string name="artist">Artist</string>
     <string name="album">Album</string>
     <string name="music_player">Music\nPlayer</string>
+    <string name="online">Online</string>
 </resources>

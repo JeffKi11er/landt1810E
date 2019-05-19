@@ -29,6 +29,7 @@ import com.phongbm.musicplayer.databinding.ActivityMainBinding;
 import com.phongbm.musicplayer.fragments.AlbumFragment;
 import com.phongbm.musicplayer.fragments.ArtistFragment;
 import com.phongbm.musicplayer.fragments.MusicFragment;
+import com.phongbm.musicplayer.fragments.OnlineFragment;
 import com.phongbm.musicplayer.service.MP3Service;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding>
@@ -37,6 +38,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
     private MusicFragment fmMusic = new MusicFragment();
     private AlbumFragment fmAlbum = new AlbumFragment();
     private ArtistFragment fmArtist = new ArtistFragment();
+    private OnlineFragment fmOnline =  new OnlineFragment();
+
     private PagerAdapter adapter;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -101,7 +104,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding>
 
         adapter = new PagerAdapter(this,
                 getSupportFragmentManager(),
-                fmMusic, fmAlbum, fmArtist);
+                fmMusic, fmAlbum, fmArtist, fmOnline);
         binding.pager.setAdapter(adapter);
         binding.tabLayout.setupWithViewPager(binding.pager);
     }

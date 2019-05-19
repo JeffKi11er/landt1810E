@@ -18,6 +18,7 @@ import android.widget.RemoteViews;
 import com.phongbm.musicplayer.R;
 import com.phongbm.musicplayer.model.Music;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MP3Service extends Service implements MediaPlayer.OnCompletionListener, Runnable {
@@ -63,9 +64,9 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.ui_notification);
         remoteViews.setTextViewText(R.id.tv_name, arrMusic.get(currentIndex).getTitle());
-        if (player.isPlaying()){
+        if (player.isPlaying()) {
             remoteViews.setImageViewResource(R.id.im_play, R.drawable.ic_pause);
-        }else{
+        } else {
             remoteViews.setImageViewResource(R.id.im_play, R.drawable.ic_play);
         }
 
@@ -81,22 +82,37 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
         this.arrMusic = arrMusic;
     }
 
-    public void create(int index) {
+    public void create(final int index) {
         release();
         if (arrMusic == null) {
             new Throwable("Need call setArrMusic before call create");
             return;
         }
-        Uri uri = Uri.parse(arrMusic.get(index).getData());
-        player = MediaPlayer.create(this, uri);
-        player.setOnCompletionListener(this);
-        currentIndex = index;
-
-        name.postValue(arrMusic.get(index).getTitle());
-        isLife.postValue(true);
-        music.postValue(arrMusic.get(index));
-        start();
+        try {
+            player = new MediaPlayer();
+            String data = arrMusic.get(index).getData();
+            if (arrMusic.get(index).getAlbum() == null) {
+                player.setDataSource("http://192.168.1.68/mp3music/" + data);
+            } else {
+                player.setDataSource(this, Uri.parse(data));
+            }
+            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    player.setOnCompletionListener(MP3Service.this);
+                    currentIndex = index;
+                    name.postValue(arrMusic.get(index).getTitle());
+                    isLife.postValue(true);
+                    music.postValue(arrMusic.get(index));
+                    start();
+                }
+            });
+            player.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void release() {
         if (player != null) {
@@ -150,7 +166,7 @@ public class MP3Service extends Service implements MediaPlayer.OnCompletionListe
 
     @Override
     public void run() {
-        while (true){
+        while (true) {
             current.postValue(getPosition());
             try {
                 Thread.sleep(1000);
