@@ -14,16 +14,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.t3h.demofirebase.api.ApiBuilder;
 import com.t3h.demofirebase.databinding.ActivityMainBinding;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnSuccessListener<Void>, OnFailureListener, ValueEventListener, AdapterChat.ItemClickListener {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnSuccessListener<Void>, OnFailureListener, ValueEventListener, AdapterChat.ItemClickListener, Callback<ResponseBody> {
 
     private ActivityMainBinding binding;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference reference;
     private AdapterChat adapter;
+
+    // Token
+    private String[] arrToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +53,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reference.addValueEventListener(this);
 
         binding.imSend.setOnClickListener(this);
+
+        // TODO Token
+        database.getReference("Token")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        arrToken = new String[(int) dataSnapshot.getChildrenCount()];
+                        int i = 0;
+                        for (DataSnapshot d : dataSnapshot.getChildren()) {
+                            String s = d.getValue(String.class);
+                            arrToken[i++] = s;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
 
@@ -56,6 +89,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reference.child(chat.getId() + "").setValue(chat)
                 .addOnSuccessListener(this)
                 .addOnFailureListener(this);
+
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("registration_ids", arrToken);
+            JSONObject data = new JSONObject();
+            data.put("title", "BacNV");
+            data.put("message", msg);
+            object.put("data", data);
+
+            ApiBuilder.getApi().sendFCM(object)
+            .enqueue(this);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -74,12 +125,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         ArrayList<Chat> arr = new ArrayList<>();
 
-        for (DataSnapshot data : dataSnapshot.getChildren()){
+        for (DataSnapshot data : dataSnapshot.getChildren()) {
             Chat chat = data.getValue(Chat.class);
             arr.add(chat);
         }
         adapter.setData(arr);
-        binding.lvChat.scrollToPosition(arr.size()-1);
+        binding.lvChat.scrollToPosition(arr.size() - 1);
     }
 
     @Override
@@ -89,8 +140,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemClick(Chat chat) {
-        reference.child(chat.getId()+"").removeValue()
+        reference.child(chat.getId() + "").removeValue()
                 .addOnFailureListener(this)
                 .addOnSuccessListener(this);
+    }
+
+    @Override
+    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        try {
+            String s = new String(response.errorBody().bytes());
+            int a = 3;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+
+    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
     }
 }
